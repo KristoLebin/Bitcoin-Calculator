@@ -11,6 +11,7 @@ app.get('/', function(req, res){
 
 app.post('/', function(req, res){
     //check the users choice
+    let amount = req.body.amount;
     let currency = req.body.currency;
     let url = `https://api.coindesk.com/v1/bpi/currentprice/${currency}.json`;
     //get bitcoin rates from external API
@@ -29,14 +30,17 @@ app.post('/', function(req, res){
             console.log("Price in EUR ", price);
         }
         else{
-            prica = data.bpi.USD.rate;
-            console.log("Price in USD ", Price);
+            price = data.bpi.USD.rate;
+            console.log("Price in USD ", price);
         }
-
         let disclaimer = data.disclaimer;
+
+        price = price.replace(",","")
+        price = parseFloat(price) * parseFloat(amount)
+
         res.write(`${disclaimer}`);
         res.write('<br>');
-        res.write(`Current price in ${currency} is ${price}`);
+        res.write(`Current price of ${amount} in ${currency} is ${price}`);
         res.send();
     });
 });
